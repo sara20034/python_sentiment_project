@@ -4,11 +4,17 @@ sys.path.append(os.path.abspath('..'))  # Adds the parent directory to sys.path
 
 import logging
 from src import config
-from src.load_data import load_data
+from src.load_data import load_data     # stiamo chiamando un codice python dalla cartella src
 from src.preprocess import preprocess_data
 from src.make_model import train_model
 # from src.evaluation import evaluate_model
 # from src.save_results import save_predictions
+
+# - Perché facciamo questa cosa invece che mettere tutto insieme?
+# Evitare mille righe di codice da far partire e sperare vada tutto bene. 
+# Dividiamo a livello logico cosa fanno queste funzioni.
+# --> per tenerli separati e rende tutto più facile: se un giorno voglio modificare preprocessing, 
+# invece che dovermi leggere 1000 righe, vado a guardare solo quelle e so che non sto toccando nient'altro (neanche per sbaglio)
 
 # Set up logging
 logging.basicConfig(filename='../log/pipeline.log', level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
