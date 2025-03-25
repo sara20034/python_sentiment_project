@@ -16,8 +16,11 @@ from src.make_model import train_model
 # --> per tenerli separati e rende tutto più facile: se un giorno voglio modificare preprocessing, 
 # invece che dovermi leggere 1000 righe, vado a guardare solo quelle e so che non sto toccando nient'altro (neanche per sbaglio)
 
+# Abbiamo salvato il file (ha segnato che ci sono stati dei changes), commit e sincronizzato 
+# abbiamo fatto commit e un push su github
+
 # Set up logging
-logging.basicConfig(filename='../log/pipeline.log', level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.basicConfig(filename='../logs/pipeline.log', level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 def main():
     logging.info("Starting Sentiment Analysis Pipeline...")
