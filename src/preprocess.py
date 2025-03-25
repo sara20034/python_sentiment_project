@@ -36,7 +36,8 @@ def preprocess_data():
         text = text.lower()
 
         # Tokenize words
-        words = word_tokenize(text)
+        words = word_tokenize(text)       # TOKENIZATIO: PRENDIAMO TESTO E CERCHIAMO DI ARRIVARE A LIVELLO DI TOKEN (PAROLE)
+            # Funziona un po' come split, ma più sofisticcato: separa anche punteggiatura. 
 
         # Remove URLs
         words = [word for word in words if not urlparse(word).scheme]  # Checks if it's a URL
@@ -54,10 +55,14 @@ def preprocess_data():
         words = [emoji.demojize(word).replace("_", " ") for word in words]
 
         # Remove stopwords
+        # parole che non danno informazione
         words = [word for word in words if word not in stop_words]
 
         # Lemmatize words
+        # semplifica la parola: es. da plurale a singolare, che altrimenti verrebbero viste come diverse. 
         words = [lemmatizer.lemmatize(word) for word in words]
+        # si può fare anche stamming: si ottiene la radice della parola. 
+        # Ma di solito viene evitato, perchè un po' drammatico. 
 
         # Reconstruct cleaned text
         return " ".join(words)
