@@ -14,6 +14,7 @@ import logging
 # Set up logging
 #logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
+import pickle
 
 def load_data():
     """Loads data from the SQLite database."""
@@ -26,7 +27,7 @@ def load_data():
 
 def train_model(grid_search=False):
     """Trains a Random Forest model with GridSearchCV and saves evaluation metrics to CSV."""
-    df = load_data()
+    df = load_data().head(100)
 
     # Save original indices before vectorization
     df_indices = df.index
@@ -35,6 +36,10 @@ def train_model(grid_search=False):
     vectorizer = TfidfVectorizer()
     X = vectorizer.fit_transform(df['cleaned_text'])
     y = df['sentiment']
+
+    # Salviamo la vettorizzazione
+    with open(f"{config.MODELS_PATH}vectorizer.pickle", "wb") as f:
+        pickle.dump(vectorizer, f)
 
     # Train-test split (preserve indices)
     X_train, X_test, y_train, y_test, train_idx, test_idx = train_test_split(
@@ -59,6 +64,13 @@ def train_model(grid_search=False):
         rf = RandomForestClassifier()
         rf.fit(X_train, y_train)
         y_pred = rf.predict(X_test)
+
+    # Salviamo modello in un file ("wb" è write binary)
+    logging.info('Saving model...')
+    with open(os.path.join(config.MODELS_PATH, "random_forest.pickle"), "wb") as file:
+        pickle.dump(rf, file)
+    # 'with open(path) as file' è una sintassi di python che apre un file e poi, finito quello che c'è nel suo indent, lo chiude
+    # Si potrebbe anche fare 'import pickle \npikcle.dump()', MA così apre file e lo lascia aperto.
 
     # Create a DataFrame for the test set with predictions
     test_df = df.loc[test_idx].copy()  # Copy test set rows

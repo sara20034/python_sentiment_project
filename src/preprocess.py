@@ -36,7 +36,7 @@ def preprocess_data():
         text = text.lower()
 
         # Tokenize words
-        words = word_tokenize(text)       # TOKENIZATIO: PRENDIAMO TESTO E CERCHIAMO DI ARRIVARE A LIVELLO DI TOKEN (PAROLE)
+        words = word_tokenize(text)       # TOKENIZATION: PRENDIAMO TESTO E CERCHIAMO DI ARRIVARE A LIVELLO DI TOKEN (PAROLE)
             # Funziona un po' come split, ma più sofisticcato: separa anche punteggiatura. 
 
         # Remove URLs
