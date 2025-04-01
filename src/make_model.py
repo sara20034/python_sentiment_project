@@ -5,6 +5,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import os
 import sys
@@ -27,7 +28,7 @@ def load_data():
 
 def train_model(grid_search=False):
     """Trains a Random Forest model with GridSearchCV and saves evaluation metrics to CSV."""
-    df = load_data().sample(100)
+    df = load_data().sample(20000)
 
     # Save original indices before vectorization
     df_indices = df.index
@@ -72,9 +73,33 @@ def train_model(grid_search=False):
     # 'with open(path) as file' è una sintassi di python che apre un file e poi, finito quello che c'è nel suo indent, lo chiude
     # Si potrebbe anche fare 'import pickle \npikcle.dump()', MA così apre file e lo lascia aperto.
 
+    # LOGISTICO
+    if grid_search:
+            logistic = LogisticRegression()
+            param_grid = {
+                'n_iterazioni': [50, 100, 150],
+            }
+
+            grid_search = GridSearchCV(logistic, param_grid, cv=3, scoring='accuracy', n_jobs=-1, verbose=1)
+            grid_search.fit(X_train, y_train)
+
+            best_model = grid_search.best_estimator_
+            y_pred_log = best_model.predict(X_test)
+        
+    else:
+        logistic = LogisticRegression()
+        logistic.fit(X_train, y_train)
+        y_pred_log = logistic.predict(X_test)
+
+    # Salviamo modello in un file ("wb" è write binary)
+    logging.info('Saving model...')
+    with open(os.path.join(config.MODELS_PATH, "logistic.pickle"), "wb") as file:
+        pickle.dump(logistic, file)
+
     # Create a DataFrame for the test set with predictions
     test_df = df.loc[test_idx].copy()  # Copy test set rows
-    test_df['prediction'] = y_pred  # Add predictions
+    test_df['prediction_rf'] = y_pred  # Add predictions
+    test_df['prediction_log'] = y_pred_log
 
 
     # Compute metrics
